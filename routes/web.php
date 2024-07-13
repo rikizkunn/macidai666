@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\CartController;
+use App\Models\Products;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,7 @@ Route::get('/', function () {
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::middleware(['auth', 'userMiddleware'])->group(function () {
     Route::get('/user', function () {
@@ -48,10 +49,11 @@ Route::get('/not-found', function () {
 // });
 // Route::get('/register', [RegisteredUserController::class, 'create']);
 Route::prefix('/products')->group(function () {
-    
-    Route::get('/', [ProductsController::class, 'index'])->name('dashboard');
+    Route::get('/filter', [ProductsController::class, 'filtering_product'])->name('filter_products');
+    Route::get('/', [ProductsController::class, 'index'])->name('show_products');
     Route::get('/{slug}', [ProductsController::class, 'show'])->name('product_detail');
     Route::post('/order', [ProductsController::class, 'show_order'])->name('order_product');
+
     // Route::post('/order/{trx_id}', [ProductsController::class, 'order'])->name('order_product');
     // Route::get('/create', [ProductsController::class, 'order'])->name('product_detail');
     // Route::post('/store', [ProductsController::class, 'order'])->name('product_detail');
@@ -59,6 +61,8 @@ Route::prefix('/products')->group(function () {
 
 
 });
+
+
 
 Route::prefix('/cart')->group(function () {
     Route::post('/add', [CartController::class, 'addToCart'])->name('add_cart');
