@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Product Items')
+@section('title', 'Products List')
 
 @section('content')
 
@@ -66,7 +66,7 @@
 
 
       <div class="p-4">
-        <a href="javascript:void(0)" class="btn btn-primary w-100">Reset Filters</a>
+        <a href="{{ route('show_products') }}" class="btn btn-primary w-100">Reset Filters</a>
       </div>
     </div>
     <div class="card-body p-4 pb-0">

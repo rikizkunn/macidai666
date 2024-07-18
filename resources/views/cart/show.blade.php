@@ -1,5 +1,5 @@
-@extends('layouts.app') 
-@section('title', 'Cart') 
+@extends('layouts.app')
+@section('title', 'Cart')
 @section('custom_css')
 
 <link rel="stylesheet" href="{{ asset('assets/libs/owl.carousel/dist/assets/owl.carousel.min.css') }}">
@@ -28,11 +28,27 @@
     </div>
   </div>
 </div>
+
+@if (count($products) == 0)
+<div class="row d-flex justify-content-center">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body text-center">
+        <img src="../assets/images/products/empty-shopping-bag.gif" alt="modernize-img" class="img-fluid mb-4" width="200">
+        <h5 class="fw-semibold fs-5 mb-2">Oop, Your cart is empty!</h5>
+        <p class="mb-3">Get back to shopping and get rewards from it.</p>
+        <a href="{{ route('show_products') }}" class="btn btn-primary">Go for shopping!</a>
+      </div>
+    </div>
+  </div>
+</div>
+@else
 <div class="checkout ">
   <div class="card">
     <div class="card-body p-4">
       <div class="wizard-content">
-        <form action="#" class="tab-wizard wizard-circle">
+        <form action="{{ route('store_transactions') }}" method="POST" id="wizard" class="tab-wizard-checkout wizard-circle">
+          @csrf
           <!-- Step 1 -->
           <h6>Cart</h6>
           <section>
@@ -54,6 +70,7 @@
                         <div>
                           <h6 class="fw-semibold fs-4 mb-0">{{ $product->product_name }}</h6>
                           <p class="mb-0">digital item</p>
+                          <input type="hidden" name="products[{{ $product->product_id }}][product_id]" value="{{ $product->product_id }}">
                           <button id="delete-product" data-product-id="{{ $product->product_id }}" type="button" class="btn btn-sm text-danger fs-4"><i class="ti ti-trash"></i></button>
                         </div>
                       </div>
@@ -63,7 +80,7 @@
                         <button class="btn minus min-width-40 py-0 border-end border-muted border-end-0 text-muted" type="button" data-product-id="{{ $product->product_id }}" id="decrease">
                           <i class="ti ti-minus"></i>
                         </button>
-                        <input type="text" class="min-width-40 flex-grow-0 border border-muted text-muted fs-3 fw-semibold form-control text-center qty" placeholder="" aria-label="Example text with button addon" aria-describedby="add1" value="{{ $cart_product[$product->product_id]['quantity'] }}">
+                        <input type="text" name="products[{{ $product->product_id }}][quantity]" class="qty min-width-40 flex-grow-0 border border-muted text-muted fs-3 fw-semibold form-control text-center" placeholder="" aria-label="Example text with button addon" aria-describedby="add1" value="{{ $cart_product[$product->product_id]['quantity'] }}">
                         <button class="btn min-width-40 py-0 border border-muted border-start-0 text-muted add" type="button" data-product-id="{{ $product->product_id }}" id="increase">
                           <i class="ti ti-plus"></i>
                         </button>
@@ -87,6 +104,7 @@
                 <div class="d-flex justify-content-between">
                   <h6 class="mb-0 fs-4 fw-semibold">Total</h6>
                   <h6 class="cart-total mb-0 fs-5 fw-semibold">IDR {{ $cart_total }}</h6>
+                  <input type="hidden" name="price" class="cart-total" value="{{ $cart_total }}">
                 </div>
               </div>
             </div>
@@ -95,7 +113,7 @@
           <h6>Billing & address</h6>
           <section>
             <div class="billing-address-content">
-         
+
               <div class="card shadow-none border">
                 <div class="card-body p-4">
                   <h6 class="mb-3 fs-4 fw-semibold">{{ Auth::user()->name }}</h6>
@@ -105,36 +123,36 @@
                   </h6>
                   <p class="mb-1 fs-2">Information about order will be send to this email address</p>
                   <button type="button" class="btn me-1 mb-1 bg-primary-subtle text-primary px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#qris-modal">
-                        QRIS
-                      </button>
-                      <div id="qris-modal" class="modal fade" tabindex="-1" aria-labelledby="qris-modal" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                          <div class="modal-content">
-                            <div class="modal-header d-flex align-items-center">
-                              <h4 class="modal-title" id="myModalLabel">
-                                QRIS Payment
-                              </h4>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                              <h4>
-                                Dummy QRIS Payment
-                              </h4>
-                              <img src="https://cnb.kinokuniya.co.id/themes/basic/images/payment/dummy-qris.png" height="50" class="img-fluid" alt="Blow">
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn bg-danger-subtle text-danger  waves-effect" data-bs-dismiss="modal">
-                                Close
-                              </button>
-                            </div>
-                          </div>
-                          <!-- /.modal-content -->
+                    QRIS
+                  </button>
+                  <div id="qris-modal" class="modal fade" tabindex="-1" aria-labelledby="qris-modal" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header d-flex align-items-center">
+                          <h4 class="modal-title" id="myModalLabel">
+                            QRIS Payment
+                          </h4>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <!-- /.modal-dialog -->
+                        <div class="modal-body">
+                          <h4>
+                            Dummy QRIS Payment
+                          </h4>
+                          <img src="https://cnb.kinokuniya.co.id/themes/basic/images/payment/dummy-qris.png" height="50" class="img-fluid" alt="Blow">
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn bg-danger-subtle text-danger  waves-effect" data-bs-dismiss="modal">
+                            Close
+                          </button>
+                        </div>
                       </div>
+                      <!-- /.modal-content -->
+                    </div>
+                    <!-- /.modal-dialog -->
+                  </div>
                 </div>
               </div>
-               
+
               <div class="order-summary border rounded p-4 my-4">
                 <div class="p-3">
                   <h5 class="fs-5 fw-semibold mb-4">Order Summary</h5>
@@ -165,6 +183,8 @@
           </section>
         </form>
       </div>
+      @endif
+
     </div>
   </div>
 </div>

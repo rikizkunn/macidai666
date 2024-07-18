@@ -27,11 +27,24 @@
              <!-- Dashboard -->
              <!-- =================== -->
              <li class="sidebar-item">
-               <a class="sidebar-link" href="./index.html" aria-expanded="false">
+               <a class="sidebar-link" href="{{ route('dashboard') }}" aria-expanded="false">
                  <span>
                    <i class="ti ti-aperture"></i>
                  </span>
                  <span class="hide-menu">Dashboard</span>
+               </a>
+             </li>
+             @if (Auth::user()->role == 'admin')
+             <li class="nav-small-cap">
+               <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+               <span class="hide-menu">Admin Utility</span>
+             </li>
+             <li class="sidebar-item">
+               <a class="sidebar-link" href="{{ route('show_product_admin') }}" aria-expanded="false">
+                 <span>
+                   <i class="ti ti-shopping-cart"></i>
+                 </span>
+                 <span class="hide-menu">List Product</span>
                </a>
              </li>
              <li class="sidebar-item">
@@ -39,22 +52,26 @@
                  <span>
                    <i class="ti ti-shopping-cart"></i>
                  </span>
-                 <span class="hide-menu">eCommerce</span>
+                 <span class="hide-menu">Order Request</span>
                </a>
              </li>
+
+
+             @endif
+
              <!-- =================== -->
              <!--  -->
              <!-- =================== -->
              <li class="nav-small-cap">
                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-               <span class="hide-menu">Products</span>
+               <span class="hide-menu">Products Bar</span>
              </li>
              <li class="sidebar-item">
                <a class="sidebar-link" href="{{ route('show_products') }}" aria-expanded="false">
                  <span>
-                   <i class="ti ti-shopping-cart"></i>
+                   <i class="ti ti-menu"></i>
                  </span>
-                 <span class="hide-menu">See Products</span>
+                 <span class="hide-menu">Products</span>
                </a>
              </li>
              <li class="sidebar-item">
@@ -73,7 +90,7 @@
                <span class="hide-menu">Order</span>
              </li>
              <li class="sidebar-item">
-               <a class="sidebar-link" href="#" aria-expanded="false">
+               <a class="sidebar-link" href="{{ route('transaction_history')}}" aria-expanded="false">
                  <span class="d-flex">
                    <i class="ti ti-star"></i>
                  </span>
@@ -95,34 +112,26 @@
                </a>
              </li>
            </ul>
-           <!-- Signup n Shit -->
-           <div class="unlimited-access hide-menu bg-light-primary position-relative my-7 rounded">
-             <div class="d-flex">
-               <div class="unlimited-access-title">
-                 <h6 class="fw-semibold fs-4 mb-6 text-dark w-85">Unlimited Access</h6>
-                 <button class="btn btn-primary fs-2 fw-semibold lh-sm">Signup</button>
-               </div>
-               <div class="unlimited-access-img">
-                 <img src="{{ asset('assets/images/backgrounds/rocket.png') }} " alt="" class="img-fluid">
-               </div>
-             </div>
-           </div>
          </nav>
-         <div class="fixed-profile p-3 bg-light-secondary rounded sidebar-ad mt-3">
+         <!-- Signup -->
+         <div class="fixed-profile p-3 mx-4 mb-2 bg-secondary-subtle rounded mt-3">
            <div class="hstack gap-3">
              <div class="john-img">
-               <img src="{{ asset('assets/images/profile/user-1.jpg') }} " class="rounded-circle" width="40" height="40" alt="">
+               <img src="../assets/images/profile/user-1.jpg" class="rounded-circle" width="40" height="40" alt="modernize-img" />
              </div>
              <div class="john-title">
                <h6 class="mb-0 fs-4 fw-semibold">Mathew</h6>
-               <span class="fs-2 text-dark">Designer</span>
+               <span class="fs-2">Designer</span>
              </div>
              <button class="border-0 bg-transparent text-primary ms-auto" tabindex="0" type="button" aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="logout">
                <i class="ti ti-power fs-6"></i>
              </button>
            </div>
          </div>
-         <!-- End Sidebar navigation -->
+
+         <!-- ---------------------------------- -->
+         <!-- Start Vertical Layout Sidebar -->
+         <!-- ---------------------------------- -->
        </div>
        <!-- End Sidebar scroll-->
 

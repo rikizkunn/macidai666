@@ -16,10 +16,11 @@ class UserMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->role == 'user'){
+
+        if (Auth::user()->role == 'user' || Auth::user()->role == 'admin') {
             return $next($request);
         }
-        
+
         return response()->json('You are not authorized to access this page.');
     }
 }

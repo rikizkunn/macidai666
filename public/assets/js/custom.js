@@ -132,6 +132,233 @@ $(".change-colors li a").click(function () {
     $(this).addClass("active-theme");
 });
 
+$(document).ready(function () {
+    var form = $(".tab-wizard-checkout");
+
+    form.steps({
+        headerTag: "h6",
+        bodyTag: "section",
+        transitionEffect: "fade",
+        titleTemplate: '<span class="step">#index#</span> #title#',
+        labels: {
+            finish: "Submit",
+            next: "Next",
+            previous: "Previous",
+        },
+        onFinishing: function (event, currentIndex) {
+            // Validate the form before submission
+            return form.valid();
+        },
+        onFinished: function (event, currentIndex) {
+            // Use AJAX to submit the form
+            var formData = form.serialize();
+            $.ajax({
+                type: "POST",
+                url: form.attr("action"),
+                data: formData,
+                success: function (response) {
+                    toastr.success(
+                        "Order Success Redirecting..",
+                        "Redirecting..",
+                        {
+                            progressBar: true,
+                            timeOut: 2000,
+                            preventDuplicates: true,
+                            onHidden: function () {
+                                window.location.href = "/transaction";
+                            },
+                        }
+                    );
+                    // Handle success response
+                    // window.location.replace("/transaction");
+                    console.log("success");
+                },
+                error: function (error) {
+                    console.log("error");
+                },
+            });
+        },
+    });
+
+    // Optionally add validation rules if necessary
+    form.validate({
+        errorPlacement: function errorPlacement(error, element) {
+            element.before(error);
+        },
+        rules: {
+            // Define validation rules
+        },
+    });
+});
+
+$(document).ready(function () {
+    $("#create-product").click(function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Collect form data
+        let csrfToken = $('meta[name="csrf-token"]').attr("content");
+        var productDescription = tinymce.get("mymce").getContent();
+
+        var formData = new FormData();
+        formData.append("product_name", $('input[name="product_name"]').val());
+        formData.append("brand", $('input[name="brand"]').val());
+        formData.append("product_description", productDescription);
+        formData.append(
+            "product_image",
+            $('input[name="product_image"]')[0].files[0]
+        );
+        formData.append("price", $('input[name="price"]').val());
+        formData.append("categories", $('select[name="categories"]').val());
+        formData.append("option", $('input[name="option"]').val());
+        formData.append("stock", $('input[name="stock"]').val());
+
+        // AJAX request
+        $.ajax({
+            url: "/product/store",
+            type: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: formData,
+            processData: false, // Don't process the files
+            contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+            success: function (response) {
+                // Handle success
+                toastr.success(
+                    "Product Has Been Succesfully Saved ",
+                    "Redirecting..",
+                    {
+                        progressBar: true,
+                        timeOut: 3000,
+                        preventDuplicates: true,
+                        onHidden: function () {
+                            window.location.href = "/products";
+                        },
+                    }
+                );
+            },
+            error: function (response) {
+                // Handle error
+                toastr.error("An error occurred while saving the product.");
+            },
+        });
+    });
+
+    // Handle cancel button click
+    $('button[type="button"]').click(function () {
+        // Reset form fields or perform any other action on cancel
+        $("form")[0].reset();
+    });
+});
+
+$(document).ready(function () {
+    $("#update-product").click(function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Collect form data
+        let csrfToken = $('meta[name="csrf-token"]').attr("content");
+        var productDescription = tinymce.get("mymce").getContent();
+
+        var formData = new FormData();
+        formData.append("product_name", $('input[name="product_name"]').val());
+        formData.append("brand", $('input[name="brand"]').val());
+        formData.append("product_id", $('input[name="product_id"]').val());
+        formData.append("product_description", productDescription);
+        var productImageInput = $('input[name="product_image"]')[0];
+        if (productImageInput.files.length > 0) {
+            formData.append("product_image", productImageInput.files[0]);
+        }
+        formData.append("price", $('input[name="price"]').val());
+        formData.append("categories", $('select[name="categories"]').val());
+        formData.append("option", $('input[name="option"]').val());
+        formData.append("stock", $('input[name="stock"]').val());
+
+        // AJAX request
+        $.ajax({
+            url: "/product/update", // Update the URL to your update route
+            type: "POST",
+            headers: {
+                "X-CSRF-TOKEN": csrfToken,
+            },
+            data: formData,
+            processData: false, // Don't process the files
+            contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+            success: function (response) {
+                // Handle success
+                toastr.success(
+                    "Product has been successfully updated!",
+                    "Redirecting..",
+                    {
+                        progressBar: true,
+                        timeOut: 3000,
+                        preventDuplicates: true,
+                        onHidden: function () {
+                            window.location.href = "/product/show";
+                        },
+                    }
+                );
+            },
+            error: function (response) {
+                // Handle error
+                toastr.error("An error occurred while updating the product.");
+            },
+        });
+    });
+
+    // Handle cancel button click
+    $('button[type="button"]').click(function () {
+        // Reset form fields or perform any other action on cancel
+        $("form")[0].reset();
+    });
+});
+
+$(document).ready(function () {
+    let csrfToken = $('meta[name="csrf-token"]').attr("content");
+    var table = $("#zero_config").DataTable(); // Initialize your DataTable
+
+    $(document).on("click", ".delete-product", function () {
+        var productId = $(this).data("product-id");
+        var row = $(this).closest("tr"); // Get the row to remove
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/product/delete",
+                    type: "POST",
+                    data: {
+                        _token: csrfToken,
+                        product_id: productId,
+                    },
+                    success: function (response) {
+                        Swal.fire(
+                            "Deleted!",
+                            "Your file has been deleted.",
+                            "success"
+                        );
+
+                        table.row(row).remove().draw(); // Remove the row from the DataTable
+                    },
+                    error: function (response) {
+                        Swal.fire(
+                            "Error!",
+                            "An error occurred while deleting the product.",
+                            "error"
+                        );
+                    },
+                });
+            }
+        });
+    });
+});
+
 $(document).on("click", "#add-cart", function () {
     // Assuming you have a product ID to add
     let productId = $(this).data("product-id");
@@ -199,7 +426,7 @@ $(document).on("click", "#delete-product", function () {
     // Assuming you have a product ID to add
     let productId = $(this).data("product-id");
     let csrfToken = $('meta[name="csrf-token"]').attr("content");
-    // console.log(productId);
+
     $.ajax({
         type: "POST",
         url: "/cart/destroy",
@@ -259,14 +486,17 @@ function updateCart(productId, quantity) {
         },
     });
 }
-
 // Handle click event for decrease button
 $(document).on("click", "#decrease", function () {
     let productId = $(this).data("product-id");
     let quantityInput = $(this).siblings(".qty");
     let currentValue = parseInt(quantityInput.val());
 
-    updateCart(productId, currentValue);
+    if (currentValue > 1) {
+        currentValue--;
+        quantityInput.val(currentValue);
+        updateCart(productId, currentValue);
+    }
 });
 
 // Handle click event for increase button
@@ -274,6 +504,9 @@ $(document).on("click", "#increase", function () {
     let productId = $(this).data("product-id");
     let quantityInput = $(this).siblings(".qty");
     let currentValue = parseInt(quantityInput.val());
+
+    currentValue++;
+    quantityInput.val(currentValue);
     updateCart(productId, currentValue);
 });
 
