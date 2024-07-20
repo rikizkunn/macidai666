@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Products;
 use App\Models\Transactions;
 use App\Models\TransactionsItems;
+use App\Models\DigitalItems;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,13 +18,13 @@ class TransactionsController extends Controller
     {
         // Step 1: Retrieve the transactions for the authenticated user
         $transactions = Transactions::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->get();
-
+        // dd($transaction);
         // Step 2: Extract the id values from the transactions
         $transactionIds = $transactions->pluck('id')->toArray();
 
         // Step 3: Query TransactionsItems using these IDs
         $transactionHistory = TransactionsItems::whereIn('transaction_id', $transactionIds)->orderBy('created_at', 'desc')->get();
-
+        // dd($transactionHistory);
         // Step 4: Get product information
         $productIds = $transactionHistory->pluck('product_id')->unique()->toArray();
         $products = Products::whereIn('product_id', $productIds)->get()->keyBy('product_id');
@@ -54,14 +55,6 @@ class TransactionsController extends Controller
         $transactionHistory = TransactionsItems::whereIn('transaction_id', $transactionIds)->latest()->get();
 
         return view('transaction.index', ['transactions' => $transactions, 'transactions_history' => $transactionHistory]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
 
@@ -111,7 +104,7 @@ class TransactionsController extends Controller
 
         // Step 1: Retrieve the transactions for the authenticated user
         $transaction = Transactions::where('id', $transaction_id)->where('user_id', Auth::user()->id)->first();
-
+        // dd($transaction);
         // Step 3: Query TransactionsItems using these IDs
         $transactionHistory = TransactionsItems::where('transaction_id', '=', $transaction_id)->get();
 
@@ -139,7 +132,14 @@ class TransactionsController extends Controller
             $transactionsItemsData[$transaction_data->product_id]['quantity'] += $transaction_data->quantity;
         }
 
-        return view('transaction.show', ['transactionsItemsData' => $transactionsItemsData, 'transaction' => $transaction]);
+        $item_data = "Empty Data";
+        if ($transaction->status == 'success') {
+            $data = DigitalItems::where('transaction_item_id', '=', $transaction->id)->first();
+            $item_data = $data->item_data;
+        }
+
+        return view('transaction.show', ['transactionsItemsData' => $transactionsItemsData, 'transaction' => $transaction, 'item_data' => $item_data]);
+        // return view('transaction.show');
     }
 
     /**

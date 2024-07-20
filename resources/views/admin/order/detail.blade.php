@@ -10,13 +10,13 @@
     <div class="card-body px-4 py-3">
         <div class="row align-items-center">
             <div class="col-9">
-                <h4 class="fw-semibold mb-8">Order History #{{ $transaction->id }}</h4>
+                <h4 class="fw-semibold mb-8">Order Detail #{{ $transactions->id }}</h4>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item">
                             <a class="text-muted text-decoration-none" href="../main/index.html">Home</a>
                         </li>
-                        <li class="breadcrumb-item" aria-current="page">Order History</li>
+                        <li class="breadcrumb-item" aria-current="page">Order Detail</li>
                     </ol>
                 </nav>
             </div>
@@ -92,8 +92,6 @@
                             </span>
                             @endif
                         </td>
-
-
                     </tr>
 
                     @endforeach
@@ -101,18 +99,23 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="card-body pb-0 ">
+            <div class="d-flex mb-3 align-items-center">
+                <h4 class="card-title mb-0">Input Item Data</h4>
+            </div>
+            <form action="{{ route('send_order') }}" method="POST">
+                <div class="form-group mb-3">
+                    @csrf
+                    <textarea class="form-control" name="item_data" rows="3" placeholder="Netflix Account&#10;Email : netflix2@gmail.com&#10;Password : 666IsHere"></textarea>
+                    <small id="textHelp" class="form-text text-muted">Input the Information Item : account, gift card, etc</small>
+                    <input type="hidden" name="transaction_item_id" value="{{ $transactions->id }}" />
+                </div>
+                <button type="submit" class="btn btn-md btn-dark"> Send Data </button>
+            </form>
+        </div>
     </div>
 
-    <div class="card-body pb-0 ">
-        <div class="d-flex mb-3 align-items-center">
-            <h4 class="card-title mb-0">Order Data</h4>
-        </div>
-        <div class="form-group mb-3">
-            @csrf
-            <textarea class="form-control" rows="3" placeholder="Netflix Account&#10;Email : netflix2@gmail.com&#10;Password : 666IsHere">{{ $item_data }}</textarea>
-            <small id="textHelp" class="form-text text-muted">Received Order From the Admin account, gift card, etc</small>
-        </div>
-    </div>
 
     <div class="card-body pb-10">
         <div class="container">

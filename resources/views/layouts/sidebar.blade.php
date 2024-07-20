@@ -4,10 +4,11 @@
      <aside class="left-sidebar">
        <!-- Sidebar scroll-->
        <div>
-         <div class="brand-logo d-flex align-items-center justify-content-between">
-           <a href="./index.html" class="text-nowrap logo-img">
-             <img src="{{ asset('assets/images/logos/dark-logo.svg') }}" class="dark-logo" width="180" alt="" />
-             <img src="{{ asset('assets/images/logos/light-logo.svg') }}" class="light-logo" width="180" alt="" />
+         <div class="brand-logo d-flex align-items-center justify-content-center">
+           <a href="{{ route('dashboard') }}" class="text-nowrap logo-img ">
+             <img src="{{ asset('assets/images/logo.png') }}" class="dark-logo" width="115" alt="" />
+             <img src="{{ asset('assets/images/logo.png') }}" class="light-logo" width="115" alt="" />
+             <h5 class="fs-4 text-center"> Macidai</h5>
            </a>
            <div class="close-btn d-lg-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
              <i class="ti ti-x fs-8 text-muted"></i>
@@ -42,21 +43,27 @@
              <li class="sidebar-item">
                <a class="sidebar-link" href="{{ route('show_product_admin') }}" aria-expanded="false">
                  <span>
-                   <i class="ti ti-shopping-cart"></i>
+                   <i class="ti ti-crown"></i>
                  </span>
                  <span class="hide-menu">List Product</span>
                </a>
              </li>
              <li class="sidebar-item">
-               <a class="sidebar-link" href="./index2.html" aria-expanded="false">
+               <a class="sidebar-link" href="{{ route('create_product') }}" aria-expanded="false">
                  <span>
-                   <i class="ti ti-shopping-cart"></i>
+                   <i class="ti ti-pin"></i>
+                 </span>
+                 <span class="hide-menu">Add Product</span>
+               </a>
+             </li>
+             <li class="sidebar-item">
+               <a class="sidebar-link" href="{{ route('index_order') }}" aria-expanded="false">
+                 <span>
+                   <i class="ti ti-heart"></i>
                  </span>
                  <span class="hide-menu">Order Request</span>
                </a>
              </li>
-
-
              @endif
 
              <!-- =================== -->
@@ -74,6 +81,9 @@
                  <span class="hide-menu">Products</span>
                </a>
              </li>
+             @if (Auth::user()->role == 'admin')
+
+             @else
              <li class="sidebar-item">
                <a class="sidebar-link" href="{{ route('show_cart') }}" aria-expanded="false">
                  <span>
@@ -82,13 +92,20 @@
                  <span class="hide-menu">Cart</span>
                </a>
              </li>
+             @endif
+
              <!-- ============================= -->
              <!-- OTHER -->
              <!-- ============================= -->
+
+
+             @if (Auth::user()->role == 'admin')
+             @else
              <li class="nav-small-cap">
                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                <span class="hide-menu">Order</span>
              </li>
+
              <li class="sidebar-item">
                <a class="sidebar-link" href="{{ route('transaction_history')}}" aria-expanded="false">
                  <span class="d-flex">
@@ -100,17 +117,8 @@
                  </div>
                </a>
              </li>
-             <li class="sidebar-item">
-               <a class="sidebar-link justify-content-between" href="#" aria-expanded="false">
-                 <div class="d-flex align-items-center gap-3">
-                   <span class="d-flex">
-                     <i class="ti ti-mood-smile"></i>
-                   </span>
-                   <span class="hide-menu">Outlined</span>
-                 </div>
-                 <span class="hide-menu badge rounded-pill border border-primary text-primary fs-2 py-1 px-2">Outline</span>
-               </a>
-             </li>
+             @endif
+
            </ul>
          </nav>
          <!-- Signup -->

@@ -11,8 +11,8 @@
       </li>
     </ul>
     <div class="d-block d-lg-none">
-      <img src="{{ asset('assets/images/logos/dark-logo.svg') }}" class="dark-logo" width="180" alt="" />
-      <img src="{{ asset('assets/images/logos/light-logo.svg') }}" class="light-logo" width="180" alt="" />
+      <img src="{{ asset('assets/images/logo.png') }}" class="dark-logo" width="100" alt="" />
+      <img src="{{ asset('assets/images/logo.png') }}" class="light-logo" width="100" alt="" />
     </div>
     <button class="navbar-toggler p-0 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="p-2">
@@ -64,7 +64,7 @@
                   </div>
                 </div>
                 <div class="message-body">
-                  <a href="{{ route('dashboard') }}" class="py-8 px-7 mt-8 d-flex align-items-center">
+                  <a href="{{ route('user_settings') }}" class="py-8 px-7 mt-8 d-flex align-items-center">
                     <span class="d-flex align-items-center justify-content-center bg-light rounded-1 p-6">
                       <img src="{{ asset('assets/images/svgs/icon-account.svg') }}" alt="" width="24" height="24">
                     </span>

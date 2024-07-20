@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\Products;
 use App\Models\Transactions;
 use App\Models\TransactionsItems;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use PHPUnit\Event\Tracer\Tracer;
@@ -54,15 +55,35 @@ class DashboardController extends Controller
             $transactionsItemsData[$transaction_data->product_id]['quantity'] += $transaction_data->quantity;
         }
 
+        $statistics = null;
+        $productsLatest = Products::orderBy('created_at', 'desc')->get();
+
+        if (Auth::user()->role == 'admin') {
+            $totalEarnings = TransactionsItems::sum('price');
+            $productsCount = Products::count();
+            $transactionsItemsCount = TransactionsItems::count();
+            $transactionsSuccess = Transactions::whereIn('status', ['success'])->count();
+            $transactionsPending = Transactions::whereIn('status', ['pending'])->count();
+            $usersCount = User::count();
+            $statistics = [
+                "productsCount" => $productsCount,
+                "transactionsItems" => $transactionsItemsCount,
+                "pending" => $transactionsPending,
+                "success" => $transactionsSuccess,
+                "users" => $usersCount,
+                'total_earnings' => $totalEarnings
+            ];
+        }
+
+        // $usersCount = User::count();
+
+
+
         return view('dashboard', [
             'transactions' => $transactions,
             'transactionsItemsData' => $transactionsItemsData,
+            'statistics' => $statistics,
+            'products' => $productsLatest
         ]);
-
-        // return view('transaction.show', ['transactionsItemsData' => $transactionsItemsData, 'transaction' => $transaction]);
-        // dd($transactionsItemsData);
-        // $transactionId = Transactions::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->limit(4)->get();
-        // $transaction = where
-        // return view('dashboard', ['transactions' => $transactions, 'transactionsItemsData' => $transactionsItemsData]);
     }
 }

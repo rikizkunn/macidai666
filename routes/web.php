@@ -65,13 +65,12 @@ Route::middleware(['auth', 'userMiddleware'])->group(function () {
 
 
 
-
-
 Route::middleware(['auth', 'adminMiddleware'])->group(function () {
 
     Route::prefix('/order')->group(function () {
         Route::get('/', [OrderController::class,  'index'])->name('index_order');
-        // Route::get('/detail', [OrderController::class,  'index'])->name('index_order');
+        Route::get('/detail/{transactionId}', [OrderController::class,  'detail'])->name('detail_order');
+        Route::post('/send_order', [OrderController::class,  'store'])->name('send_order');
     });
 
     Route::prefix('/product')->group(function () {
